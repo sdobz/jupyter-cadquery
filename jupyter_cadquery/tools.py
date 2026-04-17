@@ -14,8 +14,12 @@
 # limitations under the License.
 #
 
+import os
 
 import numpy as np
+
+# When imported standalone, keep ocp_vscode.show on the jupyter_cadquery transport path.
+os.environ.setdefault("JUPYTER_CADQUERY", "1")
 
 # from ocp_tessellate.cad_objects import Edges, Faces, Part, PartGroup, Vertices
 from ocp_tessellate.convert import tessellate_group, to_assembly

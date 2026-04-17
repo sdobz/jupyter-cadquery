@@ -5,15 +5,14 @@ build-backend = "hatchling.build"
 [project]
 name = "jupyter_cadquery"
 version = "4.0.2"
-description = "An extension to render cadquery objects in JupyterLab via pythreejs"
+description = "High-level CAD viewer integration for CadQuery, build123d, and OCP workflows"
 readme = "README.md"
 authors = [{ name = "Bernhard Walter", email = "b_walter@arcor.de" }]
 license = { file = "LICENSE" }
 requires-python = ">=3.8"
-keywords = ["ipython", "jupyter", "widgets", "CAD", "cadquery"]
+keywords = ["marimo", "CAD", "cadquery", "build123d", "OCP"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
-    "Framework :: IPython",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Topic :: Multimedia :: Graphics",

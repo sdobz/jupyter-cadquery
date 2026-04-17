@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
+
+os.environ.setdefault("JUPYTER_CADQUERY", "1")
 
 import orjson
 from cad_viewer_widget.utils import viewer_args

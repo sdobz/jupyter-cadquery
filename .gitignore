@@ -21,6 +21,7 @@ step.py
 
 .direnv
 .mamba
+__marimo__
 
 # OS X
 .DS_Store

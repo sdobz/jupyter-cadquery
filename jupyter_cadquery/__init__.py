@@ -16,6 +16,9 @@
 
 import os
 
+# Ensure ocp_vscode imports route through jupyter_cadquery transport hooks.
+os.environ.setdefault("JUPYTER_CADQUERY", "1")
+
 from cad_viewer_widget import (
     AnimationTrack,
     get_viewer_by_id,

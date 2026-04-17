@@ -141,8 +141,13 @@ def send_backend(data, port=None, jcv_id=None, timeit=False):
     if model is None:
         return 400
 
-    register_backend(jcv_id, model)
-    return 200
+    try:
+        register_backend(jcv_id, model)
+        return 200
+    except Exception as ex:  # pylint:disable=broad-except
+        # Keep rendering functional even when backend model loading fails.
+        print(f"Warning: backend registration failed for '{jcv_id}': {ex}")
+        return 500
 
 
 def send_measure_request(jcv_id, shape_ids):
