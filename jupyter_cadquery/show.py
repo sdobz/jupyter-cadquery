@@ -20,6 +20,7 @@ from cad_viewer_widget import (
     open_viewer as _open_viewer,
 )
 from .comms import send_measure_request, send_backend
+from .viewer_registry import register_viewer
 from ocp_vscode.backend_logo import logo as b_logo
 from .logo import logo
 from ocp_vscode.show import _show, _show_object
@@ -66,6 +67,8 @@ def open_viewer(
     l = orjson.loads(logo)
     l["config"]["collapse"] = "R"
     viewer.add_shapes(l["data"], **viewer_args(l["config"]), _is_logo=True)
+
+    register_viewer(title, viewer, default=default)
 
     send_backend({"model": b_logo}, jcv_id=viewer.widget.id)
     viewer.widget.measure_callback = send_measure_request

@@ -19,6 +19,9 @@ step.py
 # Compiled javascript
 # jupyter_cadquery/static/
 
+.direnv
+.mamba
+
 # OS X
 .DS_Store
 .virtual_documents/

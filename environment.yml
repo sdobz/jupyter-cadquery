@@ -1,0 +1,13 @@
+name: jupyter-cadquery
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - numpy
+  - marimo
+  - cadquery
+  - build123d
+  - pip:
+      - -e ../cad-viewer-widget
+      - -e .

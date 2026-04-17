@@ -1,4 +1,4 @@
-.PHONY: clean_notebooks wheel install tests check_version dist check_dist upload_test upload bump release create-release docker docker_upload
+.PHONY: clean_notebooks validate_notebooks smoke_marimo wheel install tests check_version dist check_dist upload_test upload bump release create-release docker docker_upload
 
 PYCACHE := $(shell find . -name '__pycache__')
 EGGS := $(wildcard *.egg-info)
@@ -25,6 +25,16 @@ clean_notebooks: ./examples/*.ipynb ./examples/assemblies/*.ipynb
 clean: clean_notebooks
 	@echo "=> Cleaning"
 	@rm -fr build dist $(EGGS) $(PYCACHE)
+
+validate_notebooks: ./examples/*.py
+	@for file in $^ ; do \
+		echo "$${file}" ; \
+		python validate_nb.py "$${file}"; \
+	done
+
+smoke_marimo:
+	@marimo run examples/1-cadquery.py
+	@marimo run examples/5-build123d.py
 
 prepare: clean
 	git add .

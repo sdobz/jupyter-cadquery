@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "hatch-jupyter-builder"]
+requires = ["hatchling>=1.5.0"]
 build-backend = "hatchling.build"
 
 [project]
@@ -25,17 +25,16 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "jupyterlab>=4.3.6,<5",
     "webcolors~=24.8.0",
     "cad-viewer-widget~=3.0.2",
     "cachetools~=5.5.0",
     "orjson~=3.10.16",
-    "ocp_vscode~=2.7.0",
+    "ocp_vscode>=3.3.0",
+    "marimo",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "jupyter-packaging",
     "cookiecutter",
     "twine",
     "bumpversion",
@@ -49,15 +48,8 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 include = [
-    "jupyter_cadquery/*.py", 
-    "jupyter-config/jupyter_server_config.d/jupyter_cadquery.json",
+    "jupyter_cadquery/*.py",
 ]
-
-[tool.hatch.build.targets.wheel.shared-data]
-"jupyter-config/jupyter_server_config.d" = "etc/jupyter/jupyter_server_config.d"
-
-[tool.hatch.envs.default.scripts]
-jupyter-cadquery = "jupyter_cadquery.app:JupyterCadqueryBackend.launch_instance"
 
 
 # = = = = = = = = = = = = = = 
@@ -103,11 +95,6 @@ replace = 'Current version: **v{new_version}**'
 filename = "README.md"
 search = 'jupyter_cadquery {current_version} OK'
 replace = 'jupyter_cadquery {new_version} OK'
-
-[[tool.bumpversion.files]]
-filename = "environment.yml"
-search = 'jupyter-cadquery=={current_version}'
-replace = 'jupyter-cadquery=={new_version}'
 
 [[tool.bumpversion.files]]
 filename = "docker/Dockerfile"

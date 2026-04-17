@@ -14,21 +14,21 @@
 # limitations under the License.
 #
 
-
 import os
-
-os.environ["JUPYTER_CADQUERY"] = "1"
 
 from cad_viewer_widget import (
     AnimationTrack,
-    close_sidecar as close_viewer,
-    close_sidecars as close_viewers,
-    get_sidecar as get_viewer,
-    get_sidecars as get_viewers,
-    get_default_sidecar as get_default_viewer,
-    set_default_sidecar as set_default_viewer,
     get_viewer_by_id,
     get_viewers_by_id,
+)
+
+from .viewer_registry import (
+    close_viewer,
+    close_viewers,
+    get_viewer,
+    get_viewers,
+    get_default_viewer,
+    set_default_viewer,
 )
 
 from ocp_vscode.colors import *
@@ -57,7 +57,6 @@ del _set_collapse
 from ocp_vscode.show import show_all, reset_show, show_clear
 
 
-from .app import JupyterCadqueryBackend
 from .config import get_user_defaults, save_user_defaults
 from ._version import __version__
 from .tools import auto_show, get_pick
@@ -100,21 +99,7 @@ def versions():
     print()
 
 
-def _jupyter_server_extension_points():
-    return [{"module": "jupyter_cadquery.app", "app": JupyterCadqueryBackend}]
-
-
-def _load_jupyter_server_extension(server_app):
-    JupyterCadqueryBackend.load_jupyter_server_extension(server_app)
-
-
-try:
-    from IPython import get_ipython
-
-    shell_name = get_ipython().__class__.__name__
-    if shell_name == "ZMQInteractiveShell":
-        auto_show()
-except Exception as ex:
-    ...
+# Register CAD object rich repr hooks on import for marimo and other hosts.
+auto_show()
 
 get_user_defaults()

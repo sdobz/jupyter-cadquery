@@ -19,9 +19,6 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List
 
 import cadquery as cq
-from IPython import get_ipython
-from IPython.display import display
-from ipywidgets import HBox, Layout, Output, SelectMultiple
 from ocp_tessellate.convert import to_ocpgroup, OcpGroup, OcpObject, OcpInstancesGroup
 from ocp_tessellate.ocp_utils import make_compound, BoundingBox
 
@@ -310,7 +307,6 @@ class Replay(object):
         show_result=True,
         show_bbox=False,
     ):
-        self.debug_output = Output()
         self.deviation = deviation
         self.angular_tolerance = angular_tolerance
         self.edge_accuracy = edge_accuracy
@@ -325,7 +321,6 @@ class Replay(object):
         self.stack = None
         self.result = None
         self.bbox = None
-        self.select_box = None
         self.viewer = open_viewer("Replay")
 
     def format_steps(self, raw_steps):
@@ -476,35 +471,29 @@ class Replay(object):
 
         return stack
 
-    def select_handler(self, change):
-        with self.debug_output:
-            if change["name"] == "index":
-                self.select(change["new"])
-
     def select(self, indexes):
-        self.debug_output.clear_output()
-        with self.debug_output:
-            self.indexes = indexes
-            steps = [(i, self.stack[i][1]) for i in self.indexes]
+        self.indexes = indexes
+        steps = [(i, self.stack[i][1]) for i in self.indexes]
 
-            try:
-                cad_objs = []
-                for step in steps:
-                    obj = step[1]
-                    if (
-                        hasattr(step[1], "objects") and len(step[1].objects) == 0
-                    ):  # handle workplane()
-                        obj = step[1].plane.origin
-                    pg, instance = to_ocpgroup(
-                        obj, names=["Step %02d" % step[0]], show_parent=False
-                    )
-                    if len(pg.objects) == 1:
-                        pg = pg.objects[0]
-                    cad_objs.append(OcpInstancesGroup(instance, pg))
+        try:
+            cad_objs = []
+            for step in steps:
+                obj = step[1]
+                if (
+                    hasattr(step[1], "objects") and len(step[1].objects) == 0
+                ):  # handle workplane()
+                    obj = step[1].plane.origin
+                pg, instance = to_ocpgroup(
+                    obj, names=["Step %02d" % step[0]], show_parent=False
+                )
+                if len(pg.objects) == 1:
+                    pg = pg.objects[0]
+                cad_objs.append(OcpInstancesGroup(instance, pg))
 
-            except Exception as ex:  # pylint:disable=broad-except
-                print(ex)
-                traceback.print_exc()
+        except Exception as ex:  # pylint:disable=broad-except
+            print(ex)
+            traceback.print_exc()
+            return None
         # Add hidden result to start with final size and allow for comparison
 
         if self.show_result and (
@@ -522,23 +511,24 @@ class Replay(object):
             )
             cad_objs.insert(0, OcpInstancesGroup(instance, result.objects[0]))
 
-        with self.debug_output:
-            try:
-                cv = show(
-                    *cad_objs,
-                    deviation=self.deviation,
-                    angular_tolerance=self.angular_tolerance,
-                    edge_accuracy=self.edge_accuracy,
-                    reset_camera=self.reset_camera,
-                    debug=False,
-                )
+        try:
+            cv = show(
+                *cad_objs,
+                deviation=self.deviation,
+                angular_tolerance=self.angular_tolerance,
+                edge_accuracy=self.edge_accuracy,
+                reset_camera=self.reset_camera,
+                debug=False,
+            )
 
-                self.reset_camera = "keep"
-            except Exception as ex:  # pylint:disable=broad-except
-                print("\nWarning: object cannot be shown")
-                if self.debug:
-                    print(ex)
-                    traceback.print_exc()
+            self.reset_camera = "keep"
+            return cv
+        except Exception as ex:  # pylint:disable=broad-except
+            print("\nWarning: object cannot be shown")
+            if self.debug:
+                print(ex)
+                traceback.print_exc()
+            return None
 
 
 def replay(
@@ -615,20 +605,10 @@ def replay(
 
     if index == -1:
         r.indexes = [len(r.stack) - 1]
+    elif isinstance(index, (list, tuple)):
+        r.indexes = list(index)
     else:
         r.indexes = [index]
-
-    r.select_box = SelectMultiple(
-        options=["%02d  %s" % (i, code) for i, (code, obj) in enumerate(r.stack)],
-        index=r.indexes,
-        rows=len(r.stack),
-        description="",
-        disabled=False,
-        layout=Layout(width="600px"),
-    )
-    r.select_box.add_class("monospace")
-    r.select_box.observe(r.select_handler)
-    display(HBox([r.select_box, r.debug_output]))
 
     r.select(r.indexes)
     return r
@@ -654,11 +634,7 @@ def enable_replay(show_bbox=True, show_result=False, warning=True, debug=False):
     cq.Sketch.__getattribute__ = _add_context
 
     if warning:
-        ip = get_ipython()
-        if not "reset_replay" in [
-            f.__name__ for f in ip.events.callbacks["pre_run_cell"]
-        ]:
-            ip.events.register("pre_run_cell", reset_replay)
+        print("Replay context persists between cells. Call reset_replay() explicitly when needed.")
     REPLAY = True
     HELPER = {"show_bbox": show_bbox, "show_result": show_result}
 
@@ -669,8 +645,4 @@ def disable_replay():
         "Removing replay from cadquery.Workplane (will show a final RuntimeWarning if not suppressed)"
     )
     cq.Workplane.__getattribute__ = object.__getattribute__
-
-    ip = get_ipython()
-    if "reset_replay" in [f.__name__ for f in ip.events.callbacks["pre_run_cell"]]:
-        ip.events.unregister("pre_run_cell", reset_replay)
     REPLAY = False

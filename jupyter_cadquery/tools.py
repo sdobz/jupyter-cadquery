@@ -41,30 +41,36 @@ except ImportError:
 # pylint: disable=protected-access
 # pylint: disable=unnecessary-lambda
 def auto_show():
+    def _repr_mimebundle_for(cad_obj, *args, **kwargs):
+        viewer = show(cad_obj)
+        if hasattr(viewer, "_repr_mimebundle_"):
+            return viewer._repr_mimebundle_(*args, **kwargs)
+        return None
+
     if HAS_CADQUERY:
         try:
             del cq.Workplane._repr_html_  # pylint: disable=no-member
             del cq.Shape._repr_html_  # pylint: disable=no-member
         except:  # pylint: disable=bare-except
             pass
-        cq.Workplane._ipython_display_ = lambda cad_obj: show(cad_obj)
-        cq.Shape._ipython_display_ = lambda cad_obj: show(cad_obj)
-        cq.Assembly._ipython_display_ = lambda cad_obj: show(cad_obj)
-        cq.Sketch._ipython_display_ = lambda cad_obj: show(cad_obj)
-        print("Overwriting auto display for cadquery Workplane and Shape")
+        cq.Workplane._repr_mimebundle_ = _repr_mimebundle_for
+        cq.Shape._repr_mimebundle_ = _repr_mimebundle_for
+        cq.Assembly._repr_mimebundle_ = _repr_mimebundle_for
+        cq.Sketch._repr_mimebundle_ = _repr_mimebundle_for
+        print("Registered rich repr auto display for cadquery Workplane, Shape, Assembly and Sketch")
 
     if HAS_BUILD123D:
-        bd.BuildPart._ipython_display_ = lambda cad_obj: show(cad_obj)
-        bd.BuildSketch._ipython_display_ = lambda cad_obj: show(cad_obj)
-        bd.BuildLine._ipython_display_ = lambda cad_obj: show(cad_obj)
-        bd.ShapeList._ipython_display_ = lambda cad_obj: show(cad_obj)
-        bd.Shape._ipython_display_ = lambda cad_obj: show(cad_obj)
+        bd.BuildPart._repr_mimebundle_ = _repr_mimebundle_for
+        bd.BuildSketch._repr_mimebundle_ = _repr_mimebundle_for
+        bd.BuildLine._repr_mimebundle_ = _repr_mimebundle_for
+        bd.ShapeList._repr_mimebundle_ = _repr_mimebundle_for
+        bd.Shape._repr_mimebundle_ = _repr_mimebundle_for
         try:
             del bd.Shape._repr_javascript_
         except:
             pass
         print(
-            "Overwriting auto display for build123d BuildPart, BuildSketch, BuildLine, ShapeList"
+            "Registered rich repr auto display for build123d BuildPart, BuildSketch, BuildLine, ShapeList and Shape"
         )
 
 

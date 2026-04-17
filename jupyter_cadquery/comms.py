@@ -18,15 +18,15 @@
 
 
 from enum import Enum
-import os
 
 import orjson
-import requests
-from cad_viewer_widget import get_default_sidecar, get_sidecar, show
+from cad_viewer_widget import show
 from cad_viewer_widget.utils import display_args, viewer_args
 from ocp_vscode.comms import default as json_default
 
+from .app import register_backend, handle_measure_request
 from .config import get_user_defaults
+from .viewer_registry import get_default_viewer, get_viewer
 
 __all__ = [
     "set_jupyter_port",
@@ -39,13 +39,23 @@ __all__ = [
     "send_config",
 ]
 
-SESSION = None
+_TRANSPORT_PORT = None
+
+
+def set_jupyter_port(port):
+    """Deprecated compatibility shim; kept for API stability during migration."""
+    global _TRANSPORT_PORT
+    _TRANSPORT_PORT = port
+
+
+def get_jupyter_port():
+    """Deprecated compatibility shim; kept for API stability during migration."""
+    return _TRANSPORT_PORT
+
 
 def init_session(url):
-    global SESSION
-    session = requests.Session()
-    session.get(url)
-    SESSION = session
+    # Host-agnostic in-process transport does not need an HTTP session.
+    return None
 
 
 def send_data(data, port=None, timeit=False):
@@ -100,18 +110,18 @@ def send_command(data, port=None, title=None, timeit=False):
         config = get_user_defaults()
         viewer = None
         if title is None:
-            title = get_default_sidecar()
+            title = get_default_viewer()
             if title is not None:
-                viewer = get_sidecar(title)
+                viewer = get_viewer(title)
         else:
-            viewer = get_sidecar(title)
+            viewer = get_viewer(title)
 
         if viewer is not None:
             config["_splash"] = viewer._splash
         return config
 
     elif data == "status":
-        viewer = get_sidecar(title)
+        viewer = get_viewer(title)
         return {} if viewer is None else viewer.status()
 
     else:
@@ -124,20 +134,15 @@ def send_backend(data, port=None, jcv_id=None, timeit=False):
 
     Called by ocp_vscode.show.show() to send model to backend
     """
-    port = os.environ.get("JUPYTER_PORT", "8888")
-    url = f"http://localhost:{port}"
+    if jcv_id is None:
+        return 400
 
-    if SESSION is None:
-        init_session(url)
+    model = data.get("model") if isinstance(data, dict) else data
+    if model is None:
+        return 400
 
-    message = {
-        "_xsrf": SESSION.cookies.get("_xsrf"),
-        "apikey": os.environ.get("JUPYTER_CADQUERY_API_KEY"),
-        "viewer": jcv_id,
-        "data": orjson.dumps(data, default=json_default).decode("utf-8"),
-    }
-    response = SESSION.post(f"{url}/objects", data=message)
-    return response.status_code
+    register_backend(jcv_id, model)
+    return 200
 
 
 def send_measure_request(jcv_id, shape_ids):
@@ -147,20 +152,16 @@ def send_measure_request(jcv_id, shape_ids):
     Called as callbacks by cad_viewer_widget.widget.CadViewerWidget.active_tool and
     cad_viewer_widget.widget.CadViewerWidget.selected_shape_ids to retrieve measurements
     """
-    port = os.environ.get("JUPYTER_PORT", "8888")
-    url = f"http://localhost:{port}"
-
-    if SESSION is None:
-        init_session(url)
-
-    message = {
-        "_xsrf": SESSION.cookies.get("_xsrf"),
-        "apikey": os.environ.get("JUPYTER_CADQUERY_API_KEY"),
-        "viewer": jcv_id,
-        "data": orjson.dumps(shape_ids).decode("utf-8"),
-    }
-    response = SESSION.post(f"{url}/measure", data=message)
-    return response.status_code, response.text
+    try:
+        result = handle_measure_request(jcv_id, shape_ids)
+        payload = orjson.dumps({"success": result}, default=json_default).decode("utf-8")
+        return 200, payload
+    except KeyError as ex:
+        payload = orjson.dumps({"error": str(ex)}).decode("utf-8")
+        return 404, payload
+    except Exception as ex:  # pylint:disable=broad-except
+        payload = orjson.dumps({"error": str(ex)}).decode("utf-8")
+        return 500, payload
 
 
 def send_config(config, port=None, title=None, timeit=False):
@@ -172,11 +173,11 @@ def send_config(config, port=None, title=None, timeit=False):
     title = config["config"].get("title")
 
     if title is None:
-        title = get_default_sidecar()
+        title = get_default_viewer()
         if title is None:
             return
 
-    cv = get_sidecar(title)
+    cv = get_viewer(title)
     if cv is None:
         return
 
