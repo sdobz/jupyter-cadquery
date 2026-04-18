@@ -56,7 +56,6 @@ def open_viewer(
 ):
     viewer = _open_viewer(
         title=title,
-        anchor=anchor,
         cad_width=cad_width,
         tree_width=tree_width,
         aspect_ratio=aspect_ratio,
@@ -65,7 +64,6 @@ def open_viewer(
         glass=glass,
         tools=tools,
         pinning=pinning,
-        default=default,
     )
     l = orjson.loads(logo)
     l["config"]["collapse"] = "R"
