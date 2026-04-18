@@ -14,6 +14,7 @@ def _():
 
     box = cq.Workplane("XY").box(1, 2, 3).edges().fillet(0.1)
     viewer = show(box, up="Y")
+    viewer
     return box, viewer
 
 

@@ -89,12 +89,22 @@ def send_data(data, port=None, timeit=False):
 
     all_args = viewer_args(config)
     all_args.update(display_args(config))
-    viewer = show(
-        data,
-        title=config.get("viewer"),
-        anchor=config.get("anchor"),
-        **all_args,
-    )
+    try:
+        viewer = show(
+            data,
+            title=config.get("viewer"),
+            anchor=config.get("anchor"),
+            **all_args,
+        )
+    except TypeError as ex:
+        # cad-viewer-widget variants may not expose `anchor`.
+        if "anchor" not in str(ex):
+            raise
+        viewer = show(
+            data,
+            title=config.get("viewer"),
+            **all_args,
+        )
     viewer.widget.measure_callback = send_measure_request
     return viewer
 
