@@ -19,7 +19,7 @@ import os
 # Ensure ocp_vscode imports route through marimo_cadquery transport hooks.
 os.environ.setdefault("JUPYTER_CADQUERY", "1")
 
-from cad_viewer_widget import (
+from cad_viewer_widget_marimo import (
     AnimationTrack,
     get_viewer_by_id,
     get_viewers_by_id,
@@ -49,8 +49,8 @@ from ocp_vscode.config import (
     workspace_config,
 )
 
-# Inject Collapse enum. Import in cad_viewer_widget would lead to circular import
-from cad_viewer_widget.widget import _set_collapse
+# Inject Collapse enum. Import in cad_viewer_widget_marimo would lead to circular import
+from cad_viewer_widget_marimo.widget import _set_collapse
 
 _set_collapse(
     {"R": Collapse.ROOT, "C": Collapse.ALL, "E": Collapse.NONE, "1": Collapse.LEAVES}
@@ -85,7 +85,7 @@ try:
 except:
     pass
 
-from cad_viewer_widget._version import __version__ as cvw_version
+from cad_viewer_widget_marimo._version import __version__ as cvw_version
 from ocp_tessellate.ocp_utils import Color, occt_version
 
 

@@ -48,6 +48,7 @@ allow-direct-references = true
 [tool.hatch.build.targets.wheel]
 include = [
     "marimo_cadquery/*.py",
+    "jupyter_cadquery/*.py",
 ]
 
 

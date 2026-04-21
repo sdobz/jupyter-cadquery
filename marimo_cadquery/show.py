@@ -18,8 +18,8 @@ import os
 os.environ.setdefault("JUPYTER_CADQUERY", "1")
 
 import orjson
-from cad_viewer_widget.utils import viewer_args
-from cad_viewer_widget import (
+from cad_viewer_widget_marimo.utils import viewer_args
+from cad_viewer_widget_marimo import (
     open_viewer as _open_viewer,
 )
 from .comms import send_measure_request, send_backend

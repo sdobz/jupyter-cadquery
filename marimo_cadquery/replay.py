@@ -23,7 +23,7 @@ from ocp_tessellate.convert import to_ocpgroup, OcpGroup, OcpObject, OcpInstance
 from ocp_tessellate.ocp_utils import make_compound, BoundingBox
 
 from ocp_vscode.show import show, show_object, _tessellate
-from cad_viewer_widget import open_viewer
+from cad_viewer_widget_marimo import open_viewer
 
 #
 # The Runtime part

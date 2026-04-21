@@ -20,8 +20,8 @@
 from enum import Enum
 
 import orjson
-from cad_viewer_widget import show
-from cad_viewer_widget.utils import display_args, viewer_args
+from cad_viewer_widget_marimo import show
+from cad_viewer_widget_marimo.utils import display_args, viewer_args
 from ocp_vscode.comms import default as json_default
 
 from .app import register_backend, handle_measure_request
