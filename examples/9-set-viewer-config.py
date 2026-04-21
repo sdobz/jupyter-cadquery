@@ -7,7 +7,7 @@ app = marimo.App()
 @app.cell
 def _():
     import cadquery as cq
-    from jupyter_cadquery import set_defaults, set_viewer_config, show
+    from marimo_cadquery import set_defaults, set_viewer_config, show
 
     # Keep defaults small in this demo and then override per-viewer options.
     set_defaults(axes=True, grid=(True, False, False), center_grid=True)

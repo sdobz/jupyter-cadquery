@@ -16,7 +16,7 @@
 
 import os
 
-# Ensure ocp_vscode imports route through jupyter_cadquery transport hooks.
+# Ensure ocp_vscode imports route through marimo_cadquery transport hooks.
 os.environ.setdefault("JUPYTER_CADQUERY", "1")
 
 from cad_viewer_widget import (
@@ -96,7 +96,7 @@ def versions():
 
     print()
     print("Versions:")
-    print("- jupyter_cadquery ", jcq_version)
+    print("- marimo_cadquery ", jcq_version)
     print("- cad_viewer_widget", cvw_version)
     print("- open cascade     ", occt_version())
     print()

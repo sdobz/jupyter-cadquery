@@ -13,7 +13,7 @@ def _():
 @app.cell
 def _():
     import cadquery as cq
-    from jupyter_cadquery import (
+    from marimo_cadquery import (
         AnimationTrack,
         close_viewers,
         get_default_viewer,
@@ -28,8 +28,8 @@ def _():
         Collapse,
         Color,
     )
-    from jupyter_cadquery.show import show
-    from jupyter_cadquery.replay import replay, enable_replay, disable_replay
+    from marimo_cadquery.show import show
+    from marimo_cadquery.replay import replay, enable_replay, disable_replay
 
     versions()
     return (

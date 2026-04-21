@@ -67,13 +67,13 @@ release:
 	git tag -a v$(CURRENT_VERSION) -m "Latest release: $(CURRENT_VERSION)"
 	
 create-release:
-	@github-release release -u bernhard-42 -r jupyter-cadquery -t v$(CURRENT_VERSION) -n jupyter-cadquery-$(CURRENT_VERSION)
+	@github-release release -u bernhard-42 -r marimo-cadquery -t v$(CURRENT_VERSION) -n marimo-cadquery-$(CURRENT_VERSION)
 	@sleep 2
-	@github-release upload  -u bernhard-42 -r jupyter-cadquery -t v$(CURRENT_VERSION) -n jupyter_cadquery-$(CURRENT_VERSION).tar.gz -f dist/jupyter_cadquery-$(CURRENT_VERSION).tar.gz
-	@github-release upload  -u bernhard-42 -r jupyter-cadquery -t v$(CURRENT_VERSION) -n jupyter_cadquery-$(CURRENT_VERSION)-py3-none-any.whl -f dist/jupyter_cadquery-$(CURRENT_VERSION)-py3-none-any.whl
+	@github-release upload  -u bernhard-42 -r marimo-cadquery -t v$(CURRENT_VERSION) -n marimo_cadquery-$(CURRENT_VERSION).tar.gz -f dist/marimo_cadquery-$(CURRENT_VERSION).tar.gz
+	@github-release upload  -u bernhard-42 -r marimo-cadquery -t v$(CURRENT_VERSION) -n marimo_cadquery-$(CURRENT_VERSION)-py3-none-any.whl -f dist/marimo_cadquery-$(CURRENT_VERSION)-py3-none-any.whl
 
 install: dist
-	@echo "=> Installing jupyter_cadquery"
+	@echo "=> Installing marimo_cadquery"
 	@pip install --upgrade .
 
 check_dist:
@@ -85,8 +85,8 @@ upload:
 docker:
 	@rm -fr docker/examples docker/requirements.txt
 	@cp -R examples requirements.txt docker/
-	@cd docker && docker build -t bwalter42/jupyter_cadquery:$(CURRENT_VERSION) .
+	@cd docker && docker build -t bwalter42/marimo_cadquery:$(CURRENT_VERSION) .
 	@rm -fr docker/examples docker/requirements.txt
 	
 upload_docker: 
-	@docker push bwalter42/jupyter_cadquery:$(CURRENT_VERSION)
+	@docker push bwalter42/marimo_cadquery:$(CURRENT_VERSION)

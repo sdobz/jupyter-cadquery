@@ -18,7 +18,7 @@ import os
 
 import numpy as np
 
-# When imported standalone, keep ocp_vscode.show on the jupyter_cadquery transport path.
+# When imported standalone, keep ocp_vscode.show on the marimo_cadquery transport path.
 os.environ.setdefault("JUPYTER_CADQUERY", "1")
 
 # from ocp_tessellate.cad_objects import Edges, Faces, Part, PartGroup, Vertices

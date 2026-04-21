@@ -1,5 +1,5 @@
 {
-  description = "jupyter-cadquery — development environment";
+  description = "marimo-cadquery — development environment";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
@@ -20,7 +20,7 @@
           ];
 
           shellHook = ''
-            echo "jupyter-cadquery dev environment"
+            echo "marimo-cadquery dev environment"
             echo ""
             echo "  Python and project libraries are managed by micromamba from environment.yml."
             echo ""
@@ -42,7 +42,7 @@
             esac
             eval "$(micromamba shell hook --shell "$current_shell")"
 
-            env_name="jupyter-cadquery"
+            env_name="marimo-cadquery"
             env_file="$PWD/environment.yml"
             project_file="$PWD/pyproject.toml"
             state_dir="$MAMBA_ROOT_PREFIX/.state"
@@ -119,7 +119,7 @@
 
             echo "  First-time setup:"
             echo "    micromamba create -f environment.yml -y"
-            echo "    micromamba activate jupyter-cadquery"
+            echo "    micromamba activate marimo-cadquery"
             echo ""
             echo "  Optional: disable auto env sync"
             echo "    export JCQ_AUTO_ENV=0"

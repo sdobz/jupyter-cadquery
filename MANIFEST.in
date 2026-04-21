@@ -1,2 +1,2 @@
-recursive-include jupyter_cadquery/icons *
+recursive-include marimo_cadquery/icons *
 include LICENSE

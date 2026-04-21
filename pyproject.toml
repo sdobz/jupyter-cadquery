@@ -3,7 +3,7 @@ requires = ["hatchling>=1.5.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "jupyter_cadquery"
+name = "marimo_cadquery"
 version = "4.0.2"
 description = "High-level CAD viewer integration for CadQuery, build123d, and OCP workflows"
 readme = "README.md"
@@ -25,7 +25,7 @@ classifiers = [
 ]
 dependencies = [
     "webcolors~=24.8.0",
-    "cad-viewer-widget~=3.0.2",
+    "cad-viewer-widget-marimo~=3.0.2",
     "cachetools~=5.5.0",
     "orjson~=3.10.16",
     "ocp_vscode>=3.3.0",
@@ -47,7 +47,7 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 include = [
-    "jupyter_cadquery/*.py",
+    "marimo_cadquery/*.py",
 ]
 
 
@@ -76,14 +76,14 @@ pre_commit_hooks = []
 post_commit_hooks = []
 
 [[tool.bumpversion.files]]
-filename = "jupyter_cadquery/_version.py"
+filename = "marimo_cadquery/_version.py"
 search = '__version__ = "{current_version}"'
 replace = '__version__ = "{new_version}"'
 
 [[tool.bumpversion.files]]
 filename = "README.md"
-search = 'jupyter-cadquery=={current_version}'
-replace = 'jupyter-cadquery=={new_version}'
+search = 'marimo-cadquery=={current_version}'
+replace = 'marimo-cadquery=={new_version}'
 
 [[tool.bumpversion.files]]
 filename = "README.md"
@@ -92,10 +92,10 @@ replace = 'Current version: **v{new_version}**'
 
 [[tool.bumpversion.files]]
 filename = "README.md"
-search = 'jupyter_cadquery {current_version} OK'
-replace = 'jupyter_cadquery {new_version} OK'
+search = 'marimo_cadquery {current_version} OK'
+replace = 'marimo_cadquery {new_version} OK'
 
 [[tool.bumpversion.files]]
 filename = "docker/Dockerfile"
-search = 'jupyter-cadquery=={current_version}'
-replace = 'jupyter-cadquery=={new_version}'
+search = 'marimo-cadquery=={current_version}'
+replace = 'marimo-cadquery=={new_version}'

@@ -7,7 +7,7 @@ app = marimo.App()
 @app.cell
 def _():
     from build123d import Box, BuildPart, CounterBoreHole, Mode
-    from jupyter_cadquery import set_defaults, show
+    from marimo_cadquery import set_defaults, show
 
     set_defaults(edge_accuracy=0.0001)
 

@@ -1,4 +1,4 @@
-"""Host-agnostic viewer registry used by jupyter_cadquery."""
+"""Host-agnostic viewer registry used by marimo_cadquery."""
 
 _VIEWERS = {}
 _DEFAULT_VIEWER = None

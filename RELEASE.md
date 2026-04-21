@@ -17,7 +17,7 @@ In case the jupyter labextions and/or the python code has been changed:
     make prepare  # commit deletions
     ```
 
-3. Bump version of jupyter_cadquery
+3. Bump version of marimo_cadquery
 
     - A new release candidate with rc0
 

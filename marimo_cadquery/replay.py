@@ -629,7 +629,7 @@ def enable_replay(show_bbox=True, show_result=False, warning=True, debug=False):
 
     DEBUG = debug
 
-    print("\nEnabling jupyter_cadquery replay")
+    print("\nEnabling marimo_cadquery replay")
     cq.Workplane.__getattribute__ = _add_context
     cq.Sketch.__getattribute__ = _add_context
 
